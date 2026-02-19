@@ -17,5 +17,9 @@ public class Mysql {
             throw new RuntimeException(e);
         }
     }
+    public static Connection getConnexion()
+    {
+        return connexion;
+    }
 
 }
