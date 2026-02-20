@@ -9,7 +9,7 @@ import static com.exemple.database.Env.*;
 public class Mysql {
 
     //Connexion à la BDD
-    private static Connection connexion;
+    private final static Connection connexion;
     static {
         try {
             connexion = DriverManager.getConnection(DB_URL, USERNAME, PASSWORD);
