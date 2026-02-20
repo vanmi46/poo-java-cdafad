@@ -21,8 +21,8 @@ public class GameRepository {
     }
 
     //Méthodes
-
-    public Game save(Game game) {
+    //Ajout un jeu sans les categories
+    private Game saveGame(Game game) {
         try {
             //1 écrire la requête SQL
             String sql = "INSERT INTO game(title, `description`,publish_at, manufacturer_id ) VALUE(?,?,?,?)";
@@ -51,8 +51,8 @@ public class GameRepository {
         }
         return game;
     }
-
-    public Game saveCategoriesToGame(Game game)
+    //ajout des categories à un Jeu
+    private Game saveCategoriesToGame(Game game)
     {
         try {
             for(Category category : game.getCategories()) {
@@ -72,11 +72,12 @@ public class GameRepository {
         return game;
     }
 
-    public Game saveGameWithCategory(Game game) {
+    //Ajouter un jeu avec les categories
+    public Game save(Game game) {
         Game newgame = null;
         try {
             //Ajout du game (table game)
-            newgame = this.save(game);
+            newgame = this.saveGame(game);
             //Ajout des categories (table game_category)
             this.saveCategoriesToGame(newgame);
 
@@ -85,7 +86,7 @@ public class GameRepository {
         }
         return newgame;
     }
-
+    //récupérer le jeu sans categories
     private Game findGameById(int id) {
         Game game = null;
         try {
@@ -114,6 +115,7 @@ public class GameRepository {
         return game;
     }
 
+    //récupérer les categories d'un jeu
     private ArrayList<Category> findCategoryGame(Game game) {
         ArrayList<Category> categories = new ArrayList<>();
         try {
@@ -137,6 +139,7 @@ public class GameRepository {
         return categories;
     }
 
+    // récupérer le jeu avec ces composantes (game + category)
     public Game find(int id)
     {
         Game game = null;
