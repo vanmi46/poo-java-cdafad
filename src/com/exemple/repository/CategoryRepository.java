@@ -2,10 +2,12 @@ package com.exemple.repository;
 
 import com.exemple.database.Mysql;
 import com.exemple.entity.Category;
+import com.exemple.entity.Manufacturer;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 
 public class CategoryRepository {
@@ -24,14 +26,19 @@ public class CategoryRepository {
             //1 Ecrire la requête
             String sql = "INSERT INTO Category (`name`) VALUE (?)";
             //2 préparer la requête
-            PreparedStatement stmt = connection.prepareStatement(sql);
+            PreparedStatement stmt = connection.prepareStatement(sql , Statement.RETURN_GENERATED_KEYS);
             //3 Assigner le paramètre
             stmt.setString(1, category.getName());
             //4 Exécuter la requête
-            int rows = stmt.executeUpdate();
-            //test si la requête est bien passée
-            if (rows <= 0) {
-                return null;
+            stmt.executeUpdate();
+            //5 récupération de l'id (Resultset)
+            ResultSet rs = stmt.getGeneratedKeys();
+            //6 récupération de l'ID (créer un nouvel objet)
+            if (rs.next()) {
+                category = new Category(
+                        rs.getInt("id"),
+                        category.getName()
+                );
             }
         } catch (Exception ex) {
             ex.printStackTrace();
