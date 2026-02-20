@@ -1,22 +1,18 @@
 package com.exemple.repository;
 
-import com.exemple.database.Mysql;
 import com.exemple.entity.Category;
 import com.exemple.entity.Manufacturer;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 
-public class CategoryRepository {
-    //Attribut
-    private Connection connection;
+public class CategoryRepository extends AbstractRepository<Category> {
 
-    //Constructeur
     public CategoryRepository() {
-        this.connection = Mysql.getConnexion();
+        //Appeler le constructeur de la super classe (Classe Mére)
+        super();
     }
 
     //Méthodes

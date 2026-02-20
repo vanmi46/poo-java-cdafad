@@ -3,7 +3,7 @@ package com.exemple.entity;
 import java.sql.Date;
 import java.util.ArrayList;
 
-public class Game {
+public class Game implements Entity {
     //Attributs
     private int id;
     private String title;

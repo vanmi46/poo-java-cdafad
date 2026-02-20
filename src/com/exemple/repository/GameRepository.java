@@ -1,23 +1,19 @@
 package com.exemple.repository;
 
-import com.exemple.database.Mysql;
 import com.exemple.entity.Category;
 import com.exemple.entity.Game;
 import com.exemple.entity.Manufacturer;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 
-public class GameRepository {
-    //Attribut
-    private Connection connection;
+public class GameRepository extends AbstractRepository<Game> {
 
     //Constructeur
     public GameRepository() {
-        this.connection = Mysql.getConnexion();
+       super();
     }
 
     //Méthodes

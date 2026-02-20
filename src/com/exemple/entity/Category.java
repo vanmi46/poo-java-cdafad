@@ -1,6 +1,6 @@
 package com.exemple.entity;
 
-public class Category {
+public class Category implements Entity {
 
     //Attributs
     private int id;

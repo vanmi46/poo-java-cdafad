@@ -1,27 +1,24 @@
 package com.exemple.repository;
 
-import com.exemple.database.Mysql;
 import com.exemple.entity.Category;
 import com.exemple.entity.Manufacturer;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 
-public class ManufacturerRepository {
-    //Attribut
-    private Connection connection;
+public class ManufacturerRepository extends AbstractRepository<Manufacturer> {
 
     //Constructeur
     public ManufacturerRepository() {
-        this.connection = Mysql.getConnexion();
+        super();
     }
 
     //Méthodes
     //Méthode pour ajouter une categorie
-    public Manufacturer save(Manufacturer manufacturer) {
+    public Manufacturer save(Manufacturer manufacturer)
+    {
         try {
             //1 Ecrire la requête
             String sql = "INSERT INTO manufacturer (`name`) VALUE (?)";
