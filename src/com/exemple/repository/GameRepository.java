@@ -22,7 +22,8 @@ public class GameRepository {
 
     //Méthodes
     //Ajout un jeu sans les categories
-    private Game saveGame(Game game) {
+    private Game saveGame(Game game)
+    {
         try {
             //1 écrire la requête SQL
             String sql = "INSERT INTO game(title, `description`,publish_at, manufacturer_id ) VALUE(?,?,?,?)";
@@ -51,6 +52,7 @@ public class GameRepository {
         }
         return game;
     }
+
     //ajout des categories à un Jeu
     private Game saveCategoriesToGame(Game game)
     {
@@ -86,6 +88,7 @@ public class GameRepository {
         }
         return newgame;
     }
+
     //récupérer le jeu sans categories
     private Game findGameById(int id) {
         Game game = null;
@@ -116,7 +119,7 @@ public class GameRepository {
     }
 
     //récupérer les categories d'un jeu
-    private ArrayList<Category> findCategoryGame(Game game) {
+    private ArrayList<Category> findAllCategoriesWithinGame(Game game) {
         ArrayList<Category> categories = new ArrayList<>();
         try {
             //1 Ecrire la requête
@@ -129,7 +132,7 @@ public class GameRepository {
             ps.setInt(1, game.getId());
             //4 Récupérer le resultat
             ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
+            while (rs.next()) {
                 Category category = new Category(rs.getInt("id"), rs.getString("name"));
                 categories.add(category);
             }
@@ -139,7 +142,7 @@ public class GameRepository {
         return categories;
     }
 
-    // récupérer le jeu avec ces composantes (game + category)
+    // récupérer le jeu avec ces composantes par son ID (game + + manufacturer + categories)
     public Game find(int id)
     {
         Game game = null;
@@ -147,7 +150,7 @@ public class GameRepository {
             //récupérer le Jeu
             game = this.findGameById(id);
             //récupérer la liste des categories
-            ArrayList<Category> categories = this.findCategoryGame(game);
+            ArrayList<Category> categories = this.findAllCategoriesWithinGame(game);
             //assignation des categories
             for(Category category : categories) {
                 game.addCategory(category);
@@ -156,5 +159,57 @@ public class GameRepository {
             e.printStackTrace();
         }
         return game;
+    }
+
+    //Méthode pour récupérer une ArraList de Game sans les categories
+    private ArrayList<Game> findAllGamesWithoutCategories()
+    {
+        ArrayList<Game> games = new ArrayList<>();
+        try {
+            //1 Ecrire la requête
+            String sql = "SELECT g.id, g.title, g.description, g.publish_at, g.manufacturer_id, m.name FROM game AS g" +
+                    " INNER JOIN manufacturer AS m ON g.manufacturer_id = m.id";
+            //2 Préparation de la requête
+            PreparedStatement ps = connection.prepareStatement(sql,  Statement.RETURN_GENERATED_KEYS);
+            //3 Récupération du resultat
+            ResultSet rs = ps.executeQuery();
+            //4 Construction de l'ArrayList<Game>
+            while(rs.next()) {
+                //Créer un objet Jeu
+                Game game = new Game(
+                        rs.getInt("id"),
+                        rs.getString("title"),
+                        rs.getString("description"),
+                        rs.getDate("publish_at"),
+                        new Manufacturer(rs.getInt("manufacturer_id"), rs.getString("name"))
+                );
+                //Ajout à l'ArrayList
+                games.add(game);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return  games;
+    }
+
+    //Méthode pour retourner la liste de tous les jeux (avec le manufacturer + les categories)
+    public ArrayList<Game> findAll()
+    {
+        ArrayList<Game> games = new ArrayList<>();
+        try {
+            //récupération des jeux
+            games = this.findAllGamesWithoutCategories();
+            //Parcours des jeux
+            for(Game game : games) {
+                //parcours des categories
+                for(Category category : this.findAllCategoriesWithinGame(game) ) {
+                    //assignation des categories
+                    game.addCategory(category);
+                }
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return games;
     }
 }
